@@ -74,4 +74,21 @@ public class DefinicionService {
             throw new RecordNotFoundException("No existe Definición para el id: ", id);
         }
     }
+
+    public List<Definicion> getDefinicionesByPalabraId(Long palabraId) throws RecordNotFoundException {
+        Optional<Palabra> palabra = palabraRepository.findById(palabraId);
+        if (palabra.isPresent()) {
+            return definicionRepository.findByPalabraId(palabraId);
+        }
+        return null;
+    }
+
+    public Definicion addDefinicionToPalabra(Long palabraId, Definicion newDefinicion) {
+        Palabra palabra = palabraRepository.findById(palabraId).orElse(null);
+        if (palabra == null) {
+            return null;
+        }
+        newDefinicion.setPalabra(palabra);
+        return definicionRepository.save(newDefinicion);
+    }
 }

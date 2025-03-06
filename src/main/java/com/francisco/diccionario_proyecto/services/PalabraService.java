@@ -1,6 +1,7 @@
 package com.francisco.diccionario_proyecto.services;
 
 import com.francisco.diccionario_proyecto.exceptions.RecordNotFoundException;
+import com.francisco.diccionario_proyecto.models.Definicion;
 import com.francisco.diccionario_proyecto.models.Palabra;
 import com.francisco.diccionario_proyecto.repositories.PalabraRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,11 +10,15 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 @Service
 public class PalabraService {
     @Autowired
     private PalabraRepository palabraRepository;
+    @Autowired
+    private DefinicionService definicionService;
+
     public List<Palabra> getAllPalabras() {
         List<Palabra> palabraList = palabraRepository.findAll();
         if(palabraList.size()>0){
@@ -59,5 +64,25 @@ public class PalabraService {
         }else{
             throw new RecordNotFoundException("No existe Palabra para el id: ",id);
         }
+    }
+
+    public List<Palabra> getPalabrasByCategoria(String categoria) {
+        return palabraRepository.findByCategoriaGramatical(categoria);
+    }
+
+    public List<Palabra> buscarPorInicial(char inicial) {
+        return palabraRepository.findByNombreStartingWith(String.valueOf(inicial));
+    }
+
+    public Palabra crearPalabraConDefiniciones(Palabra palabra) {
+        Palabra palabraGuardada = palabraRepository.save(palabra);
+
+        Set<Definicion> definiciones = palabra.getDefinicions();
+        for (Definicion definicion : definiciones) {
+            definicion.setPalabra(palabraGuardada);
+            definicionService.createDefinicion(palabra.getId().longValue(), definicion);
+        }
+        palabraGuardada.setDefinicions(definiciones);
+        return palabraGuardada;
     }
 }

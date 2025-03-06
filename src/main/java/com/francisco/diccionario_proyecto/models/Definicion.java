@@ -1,5 +1,6 @@
 package com.francisco.diccionario_proyecto.models;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
@@ -28,7 +29,8 @@ public class Definicion {
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @OnDelete(action = OnDeleteAction.CASCADE)
     @JoinColumn(name = "palabra_id", nullable = false)
-    @JsonIgnore
+    //@JsonIgnore
+    @JsonBackReference
     private com.francisco.diccionario_proyecto.models.Palabra palabra;
 
     public Integer getId() {

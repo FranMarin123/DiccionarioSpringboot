@@ -1,6 +1,7 @@
 package com.francisco.diccionario_proyecto.models;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
@@ -26,8 +27,9 @@ public class Palabra {
     @Column(name = "categoriaGramatical", nullable = false, length = 50)
     private String categoriaGramatical;
 
-    @OneToMany(mappedBy = "palabra")
-    @JsonIgnore
+    @OneToMany(mappedBy = "palabra", cascade = CascadeType.ALL)
+    //@JsonIgnore
+    @JsonManagedReference
     private Set<Definicion> definicions = new LinkedHashSet<>();
 
     public Integer getId() {
